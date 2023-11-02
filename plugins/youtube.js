@@ -48,13 +48,7 @@ Function({
   await fs.writeFileSync('./' + response.file, buffer);
   const writer = await addAudioMetaData(await toAudio(await fs.readFileSync('./' + response.file), 'mp4'), response.thumb, response.title, `hermit-md`, 'Hermit Official');
   return await send(message, writer, ytId[1]);
-  }
-  } else if (text.includes('Search results') && text.includes('Format: video')) {
-  const urls = message.reply_message.text.match(ytRegex);
-  if (!urls) return await message.send('*The replied message does not contain any YouTube search results.*');
-  if (isNaN(index) || index < 1 || index > urls.length) return await message.send('*Invalid index.*\n_Please provide a number within the range of search results._');
-  let id = ytIdRegex.exec(urls[index - 1]);
-  try {
+
   const result = await video(id[1]);
   if (!result) return await message.reply('_Failed to download_');
   return await message.send(result.file, 'video', { quoted: message.data, caption: result.title });
@@ -110,10 +104,7 @@ Function({
 	type: 'download'
 }, async (message, match, client) => {
 match = match || message.reply_message.text
-if (!match) return await message.reply('*Need text!*\n_Example: .play astronaut in the ocean_');
-const search = await yts(match)
-const audio = await downloadYouTubeAudio(search.videos[0].videoId, false);
-const { content_length } = await video(search.videos[0].videoId, false);
+
 const msg = `*${search.videos[0].title}* 
 
 *⬡ ID :* ${search.videos[0].videoId}
@@ -147,16 +138,7 @@ Function({
 		} catch {
 			  const response = await getJson('https://api.adithyan.xyz/ytaudio?id=' + ytId[1]);
 			  if (!response.status) return await message.send('*Failed to download*');
-			  if (response.content_length >= 10485760) return await client.sendMessage(message.jid, { audio: {url: response.result }, mimetype: 'audio/mpeg', ptt: false }, { quoted: message.data });
-			  const buffer = await getBuffer(response.result);
-			  await fs.writeFileSync('./' + response.file, buffer);
-			  const writer = await addAudioMetaData(await toAudio(await fs.readFileSync('./' + response.file), 'mp4'), response.thumb, response.title, `hermit-md`, 'Hermit Official');
-			  return await send(message, writer, ytId[1])
-	   }
-	}
-	const search = await yts(match)
-	if (search.all.length < 1) return await message.reply(Lang.NO_RESULT);
-	let no = 1;
+
 	let listText = `${t}Search results for ${match}:${t}\n\n*Format: audio*\n_To download, please reply with the desired title number._\n\n`;
 	for (let i of search.all) {
 	if (i.type == 'video') {
@@ -165,57 +147,8 @@ Function({
     }
     await message.send(listText);
     /* 
-	const listbutton = [];
-	let no = 1;
-	for (var z of search.videos) {
-		let button = { title: 'Result - ' + no++ + ' ', rows: [{title: z.title, rowId: prefix + 'song ' + z.url}]
-	};
-	listbutton.push(button)
-	};
-	const listMessage = { title: search.videos[0].title, buttonText: 'Select song', sections: listbutton }
-	await message.send(`And ${listbutton.length} More Results...`, 'text', { quoted: message.data, ...listMessage })
-	 */
-});
+	
 
-Function({
-	pattern: 'video ?(.*)',
-	fromMe: isPublic,
-	desc: Lang.VIDEO_DESC,
-	type: 'download'
-}, async (message, match, client) => {
-	match = match || message.reply_message.text
-	if (!match) return message.reply('*Need Youtube video url or query*')
-	if (isUrl(match) && match.includes('youtu')) {
-		const id = ytIdRegex.exec(match)
-	 try {
-	  const result = await video(id[1]);
-	  if (!result) return await message.reply('_Failed to download_');
-	  return await message.send(result.file, 'video', { quoted: message.data, caption: result.title });
-	  } catch (error) {
-	  return await message.send('```' + error.message + '```')
-	  }
-	}
-	const search = await yts(match)
-	if (search.all.length < 1) return await message.reply(Lang.NO_RESULT);
-	let no = 1;
-	let listText = `${t}Search results for ${match}:${t}\n\n*Format: video*\n_To download, please reply with the desired title number._\n\n`;
-	for (let i of search.all) {
-	if (i.type == 'video') {
-    listText += `${no++}. *${i.title}*\nhttps://youtu.be/${i.url.match(/(?<=\?v=)[^&]+/)[0]}\n\n`;
-    }
-    }
-    await message.send(listText);
-	/* const listbutton = [];
-	var num = 1;
-	for (var z of search.videos) {
-		let button = { title: 'Result - ' + no++ + ' ', rows: [{title: z.title, rowId: prefix + 'video ' + z.url}]
-	};
-	listbutton.push(button)
-	};
-	const listMessage = { title: search.videos[0].title, buttonText: 'Select video', sections: listbutton }
-	return await message.send(`And ${listbutton.length} More Results...`, 'text', { quoted: message.data, ...listMessage });
-	*/
-});
 
 Function({
 	pattern: 'yta ?(.*)',
