@@ -238,9 +238,7 @@ Function({
 		if (response.status) return await client.sendMessage(message.jid, { audio: {url: response.result }, mimetype: 'audio/mpeg', ptt: false }, { quoted: message.data })
 	   }
 	}
-	const search = await yts(match)
-	if (search.all.length < 1) return await message.reply('_Not Found_');
-	try {
+	
 	const result = await downloadYouTubeAudio(search.videos[0].videoId)
 	if (result.content_length >= 10485760) return await message.client.sendMessage(message.jid, {audio: await fs.readFileSync(result.file), mimetype: 'audio/mpeg'}, {quoted: message.data})
 	const file = await addAudioMetaData(await fs.readFileSync(result.file), result.thumb, result.title, `${config.BOT_INFO.split(";")[0]}`, 'Hermit Official')
@@ -271,9 +269,7 @@ Function({
 	}
 	return await message.send(`*${result.title}*\n\n*id: ${ytId[1]}*\n\n${t}Available quality${t}\n\n${list}\n_To download, please reply with the desired quality number._`);
 	};
-	const search = await yts(match)
-	if (search.all.length < 1) return await message.reply('_Not Found_');
-	try {
+	
 	const result = await video(search.videos[0].videoId);
 	if (!result) return await message.reply('_Failed to download_');
 	return await message.send(result.file, 'video', { quoted: message.data, caption: result.title });
