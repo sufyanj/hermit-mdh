@@ -14,7 +14,6 @@ const {
 } = require('../lib/');
 const { downloadYouTubeVideo, downloadYouTubeAudio, mixAudioAndVideo, combineYouTubeVideoAndAudio, getYoutubeThumbnail, video, bytesToSize } = require('../lib/youtubei.js');
 const { getInfo, getAudio, getVideo } = require('../lib/y2mate');
-const yts = require("yt-search")
 const config = require('../config');
 const Lang = getString('scrapers');
 const fs = require('fs');
